@@ -93,7 +93,15 @@ function App() {
     >
       {/* Navbar */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-4xl font-bold text-red-500">MovieMap</h1>
+       <div>
+  <h1 className="text-4xl font-bold text-red-500">
+    MovieMap 🎬
+  </h1>
+
+  <p className="text-sm text-gray-400 mt-1">
+    Find where to watch movies & shows
+  </p>
+</div>
 
         <button
           onClick={() => setDark(!dark)}
