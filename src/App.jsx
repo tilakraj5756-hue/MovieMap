@@ -17,7 +17,6 @@ function App() {
     localStorage.setItem("wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
 
-  // Load Trending on Start
   useEffect(() => {
     fetchTrending();
   }, []);
@@ -40,7 +39,6 @@ function App() {
     }
   };
 
-  // Search
   const searchMovies = async () => {
     if (!query.trim()) {
       fetchTrending();
@@ -76,12 +74,30 @@ function App() {
   };
 
   const getPlatformInfo = (id) => {
+    const freeOptions = [
+      ["YouTube"],
+      ["JioCinema"],
+      ["MX Player"],
+      ["YouTube", "JioCinema"],
+      []
+    ];
+
+    const paidOptions = [
+      ["Netflix"],
+      ["Prime Video"],
+      ["Disney+"],
+      ["Hotstar"],
+      ["Netflix", "Prime Video"],
+      ["Prime Video", "Hotstar"],
+      ["Netflix", "Disney+"]
+    ];
+
     const qualities = ["HD", "Full HD", "4K"];
 
     return {
-      free: ["YouTube", "JioCinema"],
-      paid: ["Netflix", "Prime Video", "Disney+"],
-      quality: qualities[id % 3],
+      free: freeOptions[id % freeOptions.length],
+      paid: paidOptions[id % paidOptions.length],
+      quality: qualities[id % qualities.length],
     };
   };
 
@@ -92,20 +108,20 @@ function App() {
       }`}
     >
       {/* Navbar */}
-      <div className="flex justify-between items-center mb-6">
-       <div>
-  <h1 className="text-4xl font-bold text-red-500">
-    MovieMap 🎬
-  </h1>
+      <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-4xl font-bold text-red-500">
+            MovieMap 🎬
+          </h1>
 
-  <p className="text-sm text-gray-400 mt-1">
-    Find where to watch movies & shows
-  </p>
-</div>
+          <p className="text-sm text-gray-400 mt-1">
+            Find where to watch movies & shows
+          </p>
+        </div>
 
         <button
           onClick={() => setDark(!dark)}
-          className="bg-red-600 text-white px-4 py-2 rounded-lg"
+          className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
         >
           {dark ? "☀️ Light" : "🌙 Dark"}
         </button>
@@ -133,7 +149,7 @@ function App() {
 
         <button
           onClick={searchMovies}
-          className="bg-red-600 text-white px-6 rounded-lg"
+          className="bg-red-600 text-white px-6 rounded-lg hover:bg-red-700"
         >
           Search
         </button>
@@ -174,7 +190,7 @@ function App() {
         <p className="text-center mb-6 text-lg">Loading...</p>
       )}
 
-      {/* Trending/Search Results */}
+      {/* Results */}
       <h2 className="text-2xl font-bold text-red-500 mb-6">
         {query ? "Search Results" : "Trending Today"}
       </h2>
@@ -193,7 +209,7 @@ function App() {
             return (
               <div
                 key={item.id}
-                className="bg-gray-900 text-white rounded-xl overflow-hidden shadow-lg hover:scale-105 transition duration-300"
+                className="bg-gray-900 text-white rounded-xl overflow-hidden shadow-lg hover:scale-105 hover:shadow-red-500/30 transition duration-300"
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
@@ -211,13 +227,17 @@ function App() {
                     ⭐ {item.vote_average?.toFixed(1)}
                   </p>
 
-                  <p className="text-green-400 text-sm mt-2">
-                    Free: {info.free.join(", ")}
-                  </p>
+                  {info.free.length > 0 && (
+                    <p className="text-green-400 text-sm mt-2">
+                      Free: {info.free.join(", ")}
+                    </p>
+                  )}
 
-                  <p className="text-blue-400 text-sm">
-                    Paid: {info.paid.join(", ")}
-                  </p>
+                  {info.paid.length > 0 && (
+                    <p className="text-blue-400 text-sm">
+                      Paid: {info.paid.join(", ")}
+                    </p>
+                  )}
 
                   <p className="text-purple-400 text-sm">
                     Quality: {info.quality}
@@ -259,7 +279,7 @@ function App() {
 
               <button
                 onClick={() => removeWishlist(item.id)}
-                className="mt-2 w-full bg-red-600 py-1 rounded"
+                className="mt-2 w-full bg-red-600 py-1 rounded hover:bg-red-700"
               >
                 Remove
               </button>
